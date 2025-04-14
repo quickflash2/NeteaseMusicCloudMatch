@@ -1,0 +1,28 @@
+name: Build WinForms App
+
+on: [push]  # 代码推送时触发
+
+jobs:
+  build:
+    runs-on: windows-latest  # 必须在 Windows 环境编译 WinForms
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'  # 或你的目标 .NET 版本
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build Release
+        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: NeteaseMusicCloudMatch
+          path: bin/Release/net6.0-windows/win-x64/publish/
